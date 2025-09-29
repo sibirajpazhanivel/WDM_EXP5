@@ -1,5 +1,5 @@
 ### EX5 Information Retrieval Using Boolean Model in Python
-### DATE: 
+### DATE: 26/09/2025
 ### AIM: To implement Information Retrieval Using Boolean Model in Python.
 ### Description:
 <div align = "justify">
@@ -23,12 +23,14 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
 
 ### Program:
 
-    import numpy as np
-    import pandas as pd
-    class BooleanRetrieval:
-        def __init__(self):
-            self.index = {}
-            self.documents_matrix = None
+```
+import numpy as np
+import pandas as pd
+
+class BooleanRetrieval:
+    def __init__(self):
+        self.index = {}
+        self.documents_matrix = None
 
     def index_document(self, doc_id, text):
         terms = text.lower().split()
@@ -62,7 +64,44 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
         print(list(self.index.keys()))
 
     def boolean_search(self, query):
-        # TYPE YOUR CODE HERE
+        query_terms = query.lower().split()
+        results = set()  
+        current_set = None  
+        i = 0
+        while i < len(query_terms):
+            term = query_terms[i]
+
+            if term == 'or':
+                if current_set is not None:
+                    results.update(current_set)
+                current_set = None  
+            elif term == 'and':
+                i += 1
+                continue 
+            elif term == 'not':
+                i += 1
+                if i < len(query_terms):
+                    not_term = query_terms[i]
+                    if not_term in self.index:
+                        not_docs = self.index[not_term]
+                        if current_set is None:
+                            current_set = set(range(1, len(documents) + 1)) 
+                        current_set.difference_update(not_docs)
+            else:
+                if term in self.index:
+                    term_docs = self.index[term]
+                    if current_set is None:
+                        current_set = term_docs.copy()
+                    else:
+                        current_set.intersection_update(term_docs)
+                else:
+                    current_set = set()  
+            i += 1
+
+        if current_set is not None:
+            results.update(current_set)
+
+        return sorted(results)
 
 if __name__ == "__main__":
     indexer = BooleanRetrieval()
@@ -86,8 +125,21 @@ if __name__ == "__main__":
         print(f"Results for '{query}': {results}")
     else:
         print("No results found for the query.")
-
-
+```
 ### Output:
 
+### OR
+<img width="1310" alt="Screenshot 2024-09-28 at 2 04 26 PM" src="https://github.com/user-attachments/assets/958f3791-a82c-4b3c-b609-fe90919a37b7">
+
+
+### NOT
+
+<img width="1380" alt="Screenshot 2024-09-28 at 2 05 01 PM" src="https://github.com/user-attachments/assets/185f0507-dd26-4e0b-b853-0abf077815ec">
+
+
+### AND
+
+<img width="1312" alt="Screenshot 2024-09-28 at 2 05 19 PM" src="https://github.com/user-attachments/assets/8c5ef82d-2e79-4de0-be3f-ee4afc15c772">
+
 ### Result:
+The program has been executed successfully
